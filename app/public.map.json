@@ -1,0 +1,6 @@
+[
+  "/api/health",
+  "/api/ready",
+  "/api/files/.*",
+  "/api/auth/register"
+]
