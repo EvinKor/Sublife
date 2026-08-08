@@ -120,7 +120,7 @@ export function AIManager() {
         args: Record<string, unknown>
         result?: unknown
       }
-      const data = await apiClient.post<{ response: string; tool_calls?: ToolCallResponse[] }>('/api/ai/chat', {
+      const data = await apiClient.post<{ reply: string; response?: string; operator_trace?: string[]; ticket_keys?: string[]; tool_calls?: ToolCallResponse[] }>('/api/service-desk/manager/chat', {
         message: content,
         history: chatHistory.filter(m => !m.isLoading).map(m => ({
           role: m.role,
@@ -132,7 +132,7 @@ export function AIManager() {
       // Remove loading message and add real response
       addMessage({
         role: 'assistant',
-        content: data.response || 'I apologize, but I encountered an issue processing your request.',
+        content: data.reply || data.response || 'I apologize, but I encountered an issue processing your request.',
         toolCalls: data.tool_calls,
       })
     } catch {

@@ -43,6 +43,7 @@ from .routers import (
     health_router,
     items_router,
     service_desk_router,
+    workflow_router,
 )
 from .security import get_current_user, verify_access
 
@@ -157,6 +158,9 @@ api_router.include_router(examples_router)
 
 # Service Desk — Command Center, Workbench, Policies, Insights, Data Manager
 api_router.include_router(service_desk_router)
+
+# Workflow — Supervity workflow stream test
+api_router.include_router(workflow_router)
 
 
 # =============================================================================

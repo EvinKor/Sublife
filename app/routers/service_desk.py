@@ -627,9 +627,11 @@ async def list_workbench(
     items = (
         db.query(WorkbenchItem)
         .filter(WorkbenchItem.status == status)
-        .order_by(WorkbenchItem.is_vip.desc(), WorkbenchItem.created_at.asc())
+        .order_by(WorkbenchItem.created_at.asc())
         .all()
     )
+    # Sort VIP items first (is_vip is a @property reading from JSON context, not a column)
+    items.sort(key=lambda i: (not i.is_vip, i.created_at))
     return [_workbench_schema(i) for i in items]
 
 

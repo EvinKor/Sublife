@@ -118,6 +118,7 @@ export default function RootLayout({
           funnel.variable,
           geologica.variable
         )}
+        suppressHydrationWarning
       >
         <Providers>
           <SidebarProvider>

@@ -1,0 +1,67 @@
+# SubLife Membership Tier Benefits
+
+## Tier Overview
+
+### 🥉 Bronze Tier
+- **Monthly Fee**: RM 29.90
+- **Points Multiplier**: 1x
+- **Benefits**:
+  - Access to basic wellness content
+  - Monthly health newsletter
+  - 5% discount on partner pharmacies
+  - Basic telemedicine consultation (2/month)
+
+### 🥈 Silver Tier
+- **Monthly Fee**: RM 59.90
+- **Points Multiplier**: 1.5x
+- **Benefits**:
+  - Everything in Bronze, plus:
+  - Priority customer support
+  - 10% discount on partner pharmacies
+  - Unlimited telemedicine consultations
+  - Access to wellness workshops (2/month)
+  - Annual health screening voucher (RM 200)
+
+### 🥇 Gold Tier
+- **Monthly Fee**: RM 99.90
+- **Points Multiplier**: 2x
+- **Benefits**:
+  - Everything in Silver, plus:
+  - Dedicated account manager
+  - 15% discount on partner pharmacies & clinics
+  - Family plan add-on (up to 3 members at 50% off)
+  - Quarterly health screening voucher (RM 500)
+  - Priority hospital admission assistance
+  - Complimentary annual dental checkup
+
+### 💎 Platinum Tier
+- **Monthly Fee**: RM 199.90
+- **Points Multiplier**: 3x
+- **Benefits**:
+  - Everything in Gold, plus:
+  - 24/7 concierge health support
+  - 20% discount on all partner services
+  - Family plan add-on (up to 5 members at 50% off)
+  - Monthly health screening voucher (RM 800)
+  - International medical referral service
+  - Executive health retreat (annual, valued at RM 3,000)
+  - Priority access to specialist appointments
+
+## Upgrade Policy
+- Members can upgrade at any time; the prorated difference is charged immediately.
+- Downgrades take effect at the next billing cycle.
+- Points earned at a higher tier are retained after downgrade.
+
+## Points Redemption
+| Points     | Reward                              |
+|------------|-------------------------------------|
+| 500        | RM 10 pharmacy voucher              |
+| 1,000      | RM 25 wellness store credit         |
+| 2,500      | Free specialist consultation        |
+| 5,000      | RM 100 health screening voucher     |
+| 10,000     | 1-night wellness retreat stay       |
+
+## Contact
+- Email: membership@sublife.com.my
+- Hotline: 1-800-SUB-LIFE (1-800-782-5433)
+- WhatsApp: +60 12-345 6789
