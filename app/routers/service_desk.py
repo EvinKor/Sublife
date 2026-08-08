@@ -45,7 +45,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy import desc, func, text
 from sqlalchemy.orm import Session
@@ -641,7 +641,15 @@ async def create_workbench_item(
     db: Session = Depends(get_db),
 ):
     """Agent creates a new Workbench exception (no auth — internal webhook)."""
-    item = WorkbenchItem(**payload.dict())
+    import uuid
+    context_data = payload.dict(exclude={"exception_type", "agent_recommendation"})
+    item = WorkbenchItem(
+        id=str(uuid.uuid4()),
+        exception_type=payload.exception_type,
+        context=context_data,
+        agent_recommendation=payload.agent_recommendation,
+        status="pending"
+    )
     db.add(item)
     db.commit()
     db.refresh(item)
@@ -651,7 +659,6 @@ async def create_workbench_item(
         operator="orchestrator",
         action="workbench.escalate",
         ticket_key=payload.ticket_key,
-        workbench_item_id=item.id,
         result="escalated",
         details={"exception_type": payload.exception_type, "title": payload.title},
     ))
@@ -677,6 +684,7 @@ async def get_workbench_item(
 async def resolve_workbench_item(
     item_id: str,
     payload: WorkbenchResolveRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     user: dict = Depends(get_current_user),
 ):
@@ -691,7 +699,7 @@ async def resolve_workbench_item(
     new_status = action_to_status.get(payload.action, "resolved")
 
     item.status = new_status
-    item.resolved_by = payload.resolved_by or (user.get("email") if user else "human")
+    item.resolved_by = payload.resolved_by or None
     item.resolution_note = payload.resolution_note
     item.resolved_at = datetime.now(timezone.utc)
     db.commit()
@@ -701,18 +709,35 @@ async def resolve_workbench_item(
         operator="human",
         action=f"workbench.{payload.action}",
         ticket_key=item.ticket_key,
-        workbench_item_id=item.id,
         result=new_status,
         details={"note": payload.resolution_note},
     ))
     db.commit()
+
+    if SUPERVITY_API_URL:
+        def send_webhook():
+            try:
+                webhook_url = f"{SUPERVITY_API_URL.rstrip('/')}/v1/resume"
+                webhook_payload = {
+                    "workbench_item_id": item_id,
+                    "ticket_key": item.ticket_key,
+                    "status": new_status,
+                    "resolution_note": payload.resolution_note
+                }
+                headers = {"Authorization": f"Bearer {SUPERVITY_API_KEY}"} if SUPERVITY_API_KEY else {}
+                with httpx.Client(timeout=10.0) as client:
+                    client.post(webhook_url, json=webhook_payload, headers=headers)
+            except Exception as e:
+                log.error(f"Failed to send resume webhook: {e}")
+        
+        background_tasks.add_task(send_webhook)
 
     return {"status": new_status, "id": item_id}
 
 
 def _workbench_schema(i: WorkbenchItem) -> WorkbenchItemResponse:
     return WorkbenchItemResponse(
-        id=i.id,
+        id=str(i.id),
         ticket_key=i.ticket_key,
         exception_type=i.exception_type,
         title=i.title,
@@ -998,12 +1023,31 @@ async def get_insights(
         for row in mi_risk_rows
     ]
 
+    # 6. Automation Opportunity Insights
+    auto_opp_rows = (
+        db.query(Ticket.category, func.count(Ticket.id).label("count"))
+        .filter(Ticket.status.in_(["Resolved", "Closed"]), Ticket.category.isnot(None))
+        .group_by(Ticket.category)
+        .order_by(desc("count"))
+        .limit(3)
+        .all()
+    )
+    automation_opportunities = [
+        {
+            "category": row.category,
+            "manual_resolutions": row.count,
+            "recommendation": f"High volume of completed tickets ({row.count}) in '{row.category}'. Consider creating a new Operator or AI Policy to automate this category."
+        }
+        for row in auto_opp_rows
+    ]
+
     return {
         "clusters": clusters,
         "sla_forecast": sla_forecast,
         "kb_gaps": kb_gaps,
         "team_load": team_load,
         "major_incident_risk": major_incident_risk,
+        "automation_opportunities": automation_opportunities,
     }
 
 

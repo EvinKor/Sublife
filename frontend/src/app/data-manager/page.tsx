@@ -346,24 +346,6 @@ export default function DataManagerPage() {
         </motion.div>
       )}
 
-      {/* Mandatory integrations note */}
-      <motion.div variants={itemVariants}>
-        <Card className='relative overflow-hidden border-brand-cornflower/20 bg-brand-cornflower/5'>
-          <CardContent className='p-4'>
-            <div className='flex items-start gap-3'>
-              <Icons.checkCircle className='mt-0.5 h-4 w-4 shrink-0 text-brand-cornflower' strokeWidth={1.5} />
-              <div>
-                <p className='text-sm font-semibold text-brand-navy'>Round 2 Integration Requirements</p>
-                <p className='mt-0.5 text-xs text-muted-foreground'>
-                  ✅ <strong>Channel (Teams)</strong> — Ticket intake via Microsoft Teams messages &nbsp;·&nbsp;
-                  ✅ <strong>System of Record (Supabase)</strong> — Full data pack (10 tables, 1,200 rows) &nbsp;·&nbsp;
-                  ✅ <strong>Human Loop (Teams)</strong> — Escalation notifications to on-call specialist
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
     </motion.div>
   )
 }

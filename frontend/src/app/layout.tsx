@@ -108,8 +108,8 @@ export default function RootLayout({
   return (
     <html lang='en' className='light' suppressHydrationWarning>
       <head>
-        <title>AutoPilot Command Center</title>
-        <meta name='description' content='AI Command Center — Build, govern, and monitor your AI workforce' />
+        <title>SubLife — Master Orchestrator</title>
+        <meta name='description' content='SubLife Master Orchestrator — Dual-purpose AI assistant for subscription support and IT operations' />
       </head>
       <body
         className={cn(

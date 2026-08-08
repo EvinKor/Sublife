@@ -158,24 +158,26 @@ export function PolicyEditModal({ policy, isOpen, onClose, onSave }: PolicyEditM
 
     setIsSaving(true)
     try {
+      let parsedValue
+      try {
+        parsedValue = JSON.parse(formData.natural_language)
+      } catch (e) {
+        parsedValue = formData.natural_language
+      }
+
       const payload = {
-        name: formData.name,
-        description: formData.description,
-        natural_language: formData.natural_language,
-        policy_type: formData.policy_type,
-        refined_instruction: formData.policy_type === 'natural_language' ? formData.refined_instruction : null,
-        entity_name: formData.entity_name || null,
-        priority: formData.priority,
-        tags: formData.tags,
+        value: parsedValue,
         is_active: formData.is_active,
-        dsl: formData.policy_type === 'logical' ? formData.dsl : null,
       }
 
       let savedPolicy: Policy
       if (policy) {
-        savedPolicy = await apiClient.patch<Policy>(`/api/ai/policies/${policy.id}`, payload)
+        await apiClient.put(`/api/service-desk/policies/${policy.id}`, payload)
+        savedPolicy = { ...policy, is_active: formData.is_active, natural_language: typeof parsedValue === 'object' ? JSON.stringify(parsedValue, null, 2) : String(parsedValue) }
       } else {
-        savedPolicy = await apiClient.post<Policy>('/api/ai/policies', payload)
+        console.warn('Creating policies is not supported in Round 2. Edit existing instead.')
+        setIsSaving(false)
+        return
       }
       
       onSave(savedPolicy)

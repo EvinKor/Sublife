@@ -26,8 +26,8 @@ WORKFLOW_ID = "019fe1b2-c4a1-7000-b71b-356296854d8f"
 async def execute_workflow(
     customer_identifier: str = Form(...),
     customer_message: str = Form(...),
-    membership_program_url: str = Form(...),
-    tier_benefits_document: UploadFile = File(...),
+    membership_program_url: Optional[str] = Form(""),
+    tier_benefits_document: Optional[UploadFile] = File(None),
 ):
     """
     Proxy a multipart form request to the Supervity workflow stream API.
@@ -41,15 +41,17 @@ async def execute_workflow(
 
     target_url = f"{SUPERVITY_API_URL}/api/v1/workflow-runs/execute/stream"
 
-    # Read file content
-    file_content = await tier_benefits_document.read()
-    file_name = tier_benefits_document.filename or "document"
+    # Read file content if provided
+    file_name = None
+    file_content = None
+    if tier_benefits_document:
+        file_content = await tier_benefits_document.read()
+        file_name = tier_benefits_document.filename or "document"
 
     log.info(
-        "Proxying workflow request: customer=%s, file=%s (%d bytes)",
+        "Proxying workflow request: customer=%s, file=%s",
         customer_identifier,
         file_name,
-        len(file_content),
     )
 
     # Build the multipart payload matching the Supervity API spec
@@ -58,12 +60,14 @@ async def execute_workflow(
         "inputs[customer_identifier]": (None, customer_identifier),
         "inputs[customer_message]": (None, customer_message),
         "inputs[membership_program_url]": (None, membership_program_url),
-        "inputs[tier_benefits_document]": (
+    }
+
+    if tier_benefits_document and file_content:
+        files_payload["inputs[tier_benefits_document]"] = (
             file_name,
             file_content,
             tier_benefits_document.content_type or "application/octet-stream",
-        ),
-    }
+        )
 
     headers = {
         "Authorization": f"Bearer {SUPERVITY_API_KEY}",
@@ -121,8 +125,8 @@ async def execute_workflow(
 async def execute_workflow_stream(
     customer_identifier: str = Form(...),
     customer_message: str = Form(...),
-    membership_program_url: str = Form(...),
-    tier_benefits_document: UploadFile = File(...),
+    membership_program_url: Optional[str] = Form(""),
+    tier_benefits_document: Optional[UploadFile] = File(None),
 ):
     """
     True streaming variant — streams the Supervity response chunk-by-chunk
@@ -136,20 +140,21 @@ async def execute_workflow_stream(
 
     target_url = f"{SUPERVITY_API_URL}/api/v1/workflow-runs/execute/stream"
 
-    file_content = await tier_benefits_document.read()
-    file_name = tier_benefits_document.filename or "document"
-
     files_payload = {
         "workflowId": (None, WORKFLOW_ID),
         "inputs[customer_identifier]": (None, customer_identifier),
         "inputs[customer_message]": (None, customer_message),
         "inputs[membership_program_url]": (None, membership_program_url),
-        "inputs[tier_benefits_document]": (
+    }
+    
+    if tier_benefits_document:
+        file_content = await tier_benefits_document.read()
+        file_name = tier_benefits_document.filename or "document"
+        files_payload["inputs[tier_benefits_document]"] = (
             file_name,
             file_content,
             tier_benefits_document.content_type or "application/octet-stream",
-        ),
-    }
+        )
 
     headers = {
         "Authorization": f"Bearer {SUPERVITY_API_KEY}",

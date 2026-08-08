@@ -59,18 +59,19 @@ interface NavSection {
 
 const navItems: NavSection[] = [
   {
-    title: 'Platform',
+    title: 'Main',
     items: [
-      { href: '/', label: 'Command Center', icon: Icons.dashboard },
+      { href: '/', label: 'Dashboard', icon: Icons.dashboard },
+      { href: '/test-workflow', label: 'Operator Console', icon: Icons.zap },
       { href: '/workbench', label: 'Workbench', icon: Icons.workbench },
     ],
   },
   {
     title: 'AI Intelligence',
     items: [
+      { href: '/ai/manager', label: 'AI Manager', icon: Icons.sparkles },
       { href: '/ai/policies', label: 'AI Policies', icon: Icons.brain },
       { href: '/ai/insights', label: 'AI Insights', icon: Icons.lightbulb },
-      { href: '/ai/manager', label: 'AI Manager', icon: Icons.sparkles },
     ],
   },
   {
@@ -266,10 +267,10 @@ export function Sidebar() {
             {!isCollapsed && (
               <div className='flex flex-col transition-transform duration-200 group-hover:translate-x-0.5'>
                 <span className='font-display text-lg font-bold tracking-tight text-brand-navy'>
-                  AutoPilot
+                  SubLife
                 </span>
                 <span className='text-[10px] font-medium uppercase tracking-widest text-brand-muted'>
-                  Command Center
+                  Master Orchestrator
                 </span>
               </div>
             )}

@@ -16,15 +16,25 @@ import {
 // Navigation items configuration
 const navItems = [
   {
-    title: 'Platform',
+    title: 'Main',
     items: [
       { href: '/', label: 'Dashboard', icon: Icons.dashboard },
+      { href: '/test-workflow', label: 'Operator Console', icon: Icons.zap },
       { href: '/workbench', label: 'Workbench', icon: Icons.workbench },
+    ],
+  },
+  {
+    title: 'AI Intelligence',
+    items: [
+      { href: '/ai/manager', label: 'AI Manager', icon: Icons.sparkles },
+      { href: '/ai/policies', label: 'AI Policies', icon: Icons.brain },
+      { href: '/ai/insights', label: 'AI Insights', icon: Icons.lightbulb },
     ],
   },
   {
     title: 'System',
     items: [
+      { href: '/data-manager', label: 'Data Manager', icon: Icons.share },
       { href: '/settings', label: 'Settings', icon: Icons.settings },
     ],
   },
@@ -86,10 +96,10 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             </div>
             <div className='flex flex-col'>
               <SheetTitle className='font-display text-lg font-bold tracking-tight text-brand-navy'>
-                AutoPilot
+                SubLife
               </SheetTitle>
               <span className='text-[10px] font-medium uppercase tracking-widest text-brand-muted'>
-                Command Center
+                Master Orchestrator
               </span>
             </div>
           </Link>
